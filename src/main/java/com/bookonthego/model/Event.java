@@ -13,6 +13,7 @@ public class Event {
     private String name;
     private String eventDetails;
     private Date date;
+    private double price;
     private int noOfTickets;
     private String images;
     private int totalSeats;
@@ -81,4 +82,13 @@ public class Event {
     public void setTotalSeats(int totalSeats) {
         this.totalSeats = totalSeats;
     }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
 }

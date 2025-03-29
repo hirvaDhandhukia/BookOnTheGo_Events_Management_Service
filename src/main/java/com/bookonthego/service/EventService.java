@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 public class EventService {
@@ -65,42 +68,81 @@ public class EventService {
 //        return "Tickets unavailable.";
 //    }
 
-    public String bookTicket(Long eventId, String userId) {
+//    public String bookTicket(Long eventId, String userId) {
+//        Optional<Event> eventOptional = eventRepository.findById(eventId);
+//        if (eventOptional.isPresent()) {
+//            Event event = eventOptional.get();
+//
+//            if (event.getNoOfTickets() > 0) {
+//                // Fetch all bookings and check if one exists for this event
+//                List<Booking> existingBookings = bookingRepository.findAll();
+//
+//                Booking eventBooking = null;
+//                for (Booking booking : existingBookings) {
+//                    if (booking.getEventId().equals(eventId)) {
+//                        eventBooking = booking;
+//                        break;
+//                    }
+//                }
+//
+//                if (eventBooking == null) {
+//                    eventBooking = new Booking();
+//                    eventBooking.setEventId(eventId);
+//                    eventBooking.setUserIds(userId);
+//                } else {
+//                    String currentUserIds = eventBooking.getUserIds();
+//                    eventBooking.setUserIds(currentUserIds + "," + userId);
+//                }
+//
+//                bookingRepository.save(eventBooking);
+//                event.setNoOfTickets(event.getNoOfTickets() - 1);
+//                eventRepository.save(event);
+//
+//                return "Ticket booked successfully.";
+//            } else {
+//                return "Tickets unavailable.";
+//            }
+//        }
+//        return "Event not found.";
+//    }
+
+    public Map<String, Object> bookTicket(Long eventId, String userId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isPresent()) {
             Event event = eventOptional.get();
 
             if (event.getNoOfTickets() > 0) {
-                // Fetch all bookings and check if one exists for this event
-                List<Booking> existingBookings = bookingRepository.findAll();
+                Optional<Booking> bookingOptional = bookingRepository.findByEventId(eventId);
+                Booking booking;
 
-                Booking eventBooking = null;
-                for (Booking booking : existingBookings) {
-                    if (booking.getEventId().equals(eventId)) {
-                        eventBooking = booking;
-                        break;
-                    }
-                }
-
-                if (eventBooking == null) {
-                    eventBooking = new Booking();
-                    eventBooking.setEventId(eventId);
-                    eventBooking.setUserIds(userId);
+                if (bookingOptional.isPresent()) {
+                    booking = bookingOptional.get();
+                    booking.setUserIds(booking.getUserIds() + "," + userId);
                 } else {
-                    String currentUserIds = eventBooking.getUserIds();
-                    eventBooking.setUserIds(currentUserIds + "," + userId);
+                    booking = new Booking();
+                    booking.setEventId(eventId);
+                    booking.setUserIds(userId);
                 }
 
-                bookingRepository.save(eventBooking);
+                bookingRepository.save(booking);
                 event.setNoOfTickets(event.getNoOfTickets() - 1);
                 eventRepository.save(event);
 
-                return "Ticket booked successfully.";
+                // Prepare response
+                Map<String, Object> response = new HashMap<>();
+                response.put("eventId", event.getEventId());
+                response.put("eventName", event.getName());
+                response.put("bookedBy", userId);
+                response.put("ticketPrice", event.getPrice());
+                response.put("seatsBooked", 1);
+                response.put("totalCost", event.getPrice());
+
+                return response;
             } else {
-                return "Tickets unavailable.";
+                throw new IllegalStateException("Tickets unavailable.");
             }
         }
-        return "Event not found.";
+        throw new NoSuchElementException("Event not found.");
     }
 
 

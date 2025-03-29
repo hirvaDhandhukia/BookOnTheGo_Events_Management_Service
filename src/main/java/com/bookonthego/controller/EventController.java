@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/events")
@@ -41,18 +43,33 @@ public class EventController {
         return event != null ? ResponseEntity.ok(event) : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
+//    @PostMapping("/{eventId}/book")
+//    public ResponseEntity<String> bookTicket(@PathVariable Long eventId, @RequestHeader("Authorization") String token) {
+//        String userId = "extractedFromJWT";  // Implement JWT extraction logic here
+//        String message = eventService.bookTicket(eventId, userId);
+//        return ResponseEntity.ok(message);
+////        else if(originalEvent!=null){
+////            int noOfTickets = 0; //get no of tickets from request body
+////            originalEvent.setNoOfTickets(originalEvent.getNoOfTickets()-noOfTickets);
+////            Event event = eventService.updateEvent(eventId, updatedEvent, originalEvent.getCreatorId());
+////            return event != null ? ResponseEntity.ok(event) : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+////        }
+//    }
+
     @PostMapping("/{eventId}/book")
-    public ResponseEntity<String> bookTicket(@PathVariable Long eventId, @RequestHeader("Authorization") String token) {
-        String userId = "extractedFromJWT";  // Implement JWT extraction logic here
-        String message = eventService.bookTicket(eventId, userId);
-        return ResponseEntity.ok(message);
-//        else if(originalEvent!=null){
-//            int noOfTickets = 0; //get no of tickets from request body
-//            originalEvent.setNoOfTickets(originalEvent.getNoOfTickets()-noOfTickets);
-//            Event event = eventService.updateEvent(eventId, updatedEvent, originalEvent.getCreatorId());
-//            return event != null ? ResponseEntity.ok(event) : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-//        }
+    public ResponseEntity<?> bookTicket(@PathVariable Long eventId, @RequestHeader("Authorization") String token) {
+        String userId = "extractedFromJWT"; // replace with JWT logic later
+
+        try {
+            Map<String, Object> result = eventService.bookTicket(eventId, userId);
+            return ResponseEntity.ok(result);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
+
 
     @DeleteMapping("/{eventId}")
     public ResponseEntity<String> deleteEvent(@PathVariable Long eventId, @RequestHeader("Authorization") String token) {
