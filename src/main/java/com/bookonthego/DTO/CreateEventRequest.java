@@ -1,40 +1,33 @@
-package com.bookonthego.model;
+package com.bookonthego.DTO;
 
-import jakarta.persistence.*;
 
 import java.util.Date;
 
-@Entity
-public class Event {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long eventId;
-    private Long creatorId;
+public class CreateEventRequest {
+
     private String name;
     private String eventDetails;
     private Date date;
-    private double price;
     private int noOfTickets;
-    private String images;
     private int totalSeats;
+    private String images;
+    private double price;
+
+    // Default constructor
+    public CreateEventRequest() {}
+
+    // Constructor with all fields
+    public CreateEventRequest(String name, String eventDetails, Date date, int noOfTickets, int totalSeats, String images, double price) {
+        this.name = name;
+        this.eventDetails = eventDetails;
+        this.date = date;
+        this.noOfTickets = noOfTickets;
+        this.totalSeats = totalSeats;
+        this.images = images;
+        this.price = price;
+    }
 
     // Getters and Setters
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
-    }
-
-    public Long getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(Long creatorId) {
-        this.creatorId = creatorId;
-    }
-
     public String getName() {
         return name;
     }
@@ -67,20 +60,20 @@ public class Event {
         this.noOfTickets = noOfTickets;
     }
 
-    public String getImages() {
-        return images;
-    }
-
-    public void setImages(String images) {
-        this.images = images;
-    }
-
     public int getTotalSeats() {
         return totalSeats;
     }
 
     public void setTotalSeats(int totalSeats) {
         this.totalSeats = totalSeats;
+    }
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
     }
 
     public double getPrice() {
@@ -90,5 +83,4 @@ public class Event {
     public void setPrice(double price) {
         this.price = price;
     }
-
 }

@@ -4,6 +4,7 @@ import com.bookonthego.model.Booking;
 import com.bookonthego.model.Event;
 import com.bookonthego.repository.BookingRepository;
 import com.bookonthego.repository.EventRepository;
+import com.bookonthego.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,12 @@ public class EventService {
     @Autowired
     private BookingRepository bookingRepository;
 
-    public Event createEvent(Event event) {
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    public Event createEvent(Event event, String token) {
+        String userId = jwtUtil.extractUserId(token);
+
         // Automatically sync available tickets with total seats at creation
         event.setNoOfTickets(event.getTotalSeats());
         return eventRepository.save(event);

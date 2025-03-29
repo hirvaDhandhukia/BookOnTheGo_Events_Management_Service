@@ -19,9 +19,9 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
-    @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
-        Event createdEvent = eventService.createEvent(event);
+    @PostMapping("/create")
+    public ResponseEntity<Event> createEvent(@RequestBody Event event, @RequestHeader ("Authorization") String token) {
+        Event createdEvent = eventService.createEvent(event, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
     }
 
