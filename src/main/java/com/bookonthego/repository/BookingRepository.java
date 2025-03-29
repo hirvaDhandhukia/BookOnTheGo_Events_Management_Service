@@ -11,4 +11,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Custom query methods can be added here if needed
 
     Optional<Booking> findByEventId(Long eventId);
+
+    Optional<Booking> findByUserIdAndEventId(Long userIds, Long eventId);
 }

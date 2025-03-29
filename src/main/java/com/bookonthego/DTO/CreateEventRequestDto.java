@@ -3,7 +3,7 @@ package com.bookonthego.DTO;
 
 import java.util.Date;
 
-public class CreateEventRequest {
+public class CreateEventRequestDto {
 
     private String name;
     private String eventDetails;
@@ -14,10 +14,10 @@ public class CreateEventRequest {
     private double price;
 
     // Default constructor
-    public CreateEventRequest() {}
+    public CreateEventRequestDto() {}
 
     // Constructor with all fields
-    public CreateEventRequest(String name, String eventDetails, Date date, int noOfTickets, int totalSeats, String images, double price) {
+    public CreateEventRequestDto(String name, String eventDetails, Date date, int noOfTickets, int totalSeats, String images, double price) {
         this.name = name;
         this.eventDetails = eventDetails;
         this.date = date;
