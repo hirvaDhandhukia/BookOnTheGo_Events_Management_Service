@@ -1,0 +1,41 @@
+# IDE specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Build directories
+target/
+bin/
+build/
+out/
+
+# Log files
+*.log
+logs/
+
+# Maven specific files
+pom.xml.versionsBackup
+dependency-reduced-pom.xml
+.mvn/
+mvnw
+mvnw.cmd
+
+# Dependency directories
+**/node_modules/
+
+# Application properties (consider excluding or carefully managing these)
+# src/main/resources/application*.properties
+
+# Compiled class files
+*.class
+
+# Testing files
+**/test-output/
+**/test-results/

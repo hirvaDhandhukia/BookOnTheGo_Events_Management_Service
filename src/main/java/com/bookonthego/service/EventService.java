@@ -20,6 +20,8 @@ public class EventService {
     private BookingRepository bookingRepository;
 
     public Event createEvent(Event event) {
+        // Automatically sync available tickets with total seats at creation
+        event.setNoOfTickets(event.getTotalSeats());
         return eventRepository.save(event);
     }
 
@@ -45,23 +47,62 @@ public class EventService {
         return null;  // or throw exception if needed
     }
 
+//    public String bookTicket(Long eventId, String userId) {
+//        Optional<Event> eventOptional = eventRepository.findById(eventId);
+//        if (eventOptional.isPresent()) {
+//            Event event = eventOptional.get();
+//            if (event.getNoOfTickets() > 0) {
+//                Booking booking = new Booking();
+//                booking.setEventId(eventId);
+//                String currentUserIds = bookingRepository.findById(eventId).get().getUserIds();
+//                booking.setUserIds(currentUserIds + "," + userId);
+//                bookingRepository.save(booking);
+//                event.setNoOfTickets(event.getNoOfTickets() - 1);
+//                eventRepository.save(event);
+//                return "Ticket booked successfully.";
+//            }
+//        }
+//        return "Tickets unavailable.";
+//    }
+
     public String bookTicket(Long eventId, String userId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isPresent()) {
             Event event = eventOptional.get();
+
             if (event.getNoOfTickets() > 0) {
-                Booking booking = new Booking();
-                booking.setEventId(eventId);
-                String currentUserIds = bookingRepository.findById(eventId).get().getUserIds();
-                booking.setUserIds(currentUserIds + "," + userId);
-                bookingRepository.save(booking);
+                // Fetch all bookings and check if one exists for this event
+                List<Booking> existingBookings = bookingRepository.findAll();
+
+                Booking eventBooking = null;
+                for (Booking booking : existingBookings) {
+                    if (booking.getEventId().equals(eventId)) {
+                        eventBooking = booking;
+                        break;
+                    }
+                }
+
+                if (eventBooking == null) {
+                    eventBooking = new Booking();
+                    eventBooking.setEventId(eventId);
+                    eventBooking.setUserIds(userId);
+                } else {
+                    String currentUserIds = eventBooking.getUserIds();
+                    eventBooking.setUserIds(currentUserIds + "," + userId);
+                }
+
+                bookingRepository.save(eventBooking);
                 event.setNoOfTickets(event.getNoOfTickets() - 1);
                 eventRepository.save(event);
+
                 return "Ticket booked successfully.";
+            } else {
+                return "Tickets unavailable.";
             }
         }
-        return "Tickets unavailable.";
+        return "Event not found.";
     }
+
 
     public boolean deleteEvent(Long eventId, String userId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
