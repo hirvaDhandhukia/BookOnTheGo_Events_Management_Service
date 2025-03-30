@@ -19,6 +19,6 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
     private Long eventId;
-    private Long userIds;
+    private Long userId;
     private int noOfTickets;
 }

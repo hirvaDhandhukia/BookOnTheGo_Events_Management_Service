@@ -59,7 +59,7 @@ public class EventController {
 //    }
 
     @PostMapping("/{eventId}/book")
-    public ResponseEntity<?> bookTicket(@PathVariable Long eventId, @PathVariable Integer numberOfTickets,@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> bookTicket(@PathVariable Long eventId, @RequestParam Integer numberOfTickets,@RequestHeader("Authorization") String token) {
 
         try {
             BookTicketResponseDto booking = eventService.bookTicket(eventId, numberOfTickets, token);

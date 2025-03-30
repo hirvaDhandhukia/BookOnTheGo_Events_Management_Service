@@ -96,7 +96,7 @@ public class EventService {
                 else {
                     booking = new Booking();
                     booking.setEventId(eventId);
-                    booking.setUserIds(Long.valueOf(userId));
+                    booking.setUserId(Long.valueOf(userId));
                     booking.setNoOfTickets(numberOfTickets);
                 }
                 ticketCost = price * numberOfTickets;
