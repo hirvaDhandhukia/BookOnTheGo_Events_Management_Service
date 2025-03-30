@@ -2,6 +2,7 @@ package com.bookonthego.controller;
 
 import com.bookonthego.DTO.BookTicketResponseDto;
 import com.bookonthego.DTO.CreateEventRequestDto;
+import com.bookonthego.DTO.UpdateEventRequestDto;
 import com.bookonthego.model.Booking;
 import com.bookonthego.model.Event;
 import com.bookonthego.service.EventService;
@@ -39,11 +40,22 @@ public class EventController {
         return event.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+//    @PutMapping("/{eventId}")
+//    public ResponseEntity<Event> updateEvent(@PathVariable Long eventId, @RequestBody CreateEventRequestDto updatedEvent, @RequestHeader("Authorization") String token) {
+//        Event event = eventService.updateEvent(eventId, updatedEvent, token);
+//        return event != null ? ResponseEntity.ok(event) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//    }
+
     @PutMapping("/{eventId}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Long eventId, @RequestBody CreateEventRequestDto updatedEvent, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Event> updateEvent(
+            @PathVariable Long eventId,
+            @RequestBody UpdateEventRequestDto updatedEvent,
+            @RequestHeader("Authorization") String token) {
+
         Event event = eventService.updateEvent(eventId, updatedEvent, token);
         return event != null ? ResponseEntity.ok(event) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
 
 //    @PostMapping("/{eventId}/book")
 //    public ResponseEntity<String> bookTicket(@PathVariable Long eventId, @RequestHeader("Authorization") String token) {

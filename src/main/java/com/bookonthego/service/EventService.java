@@ -2,6 +2,7 @@ package com.bookonthego.service;
 
 import com.bookonthego.DTO.BookTicketResponseDto;
 import com.bookonthego.DTO.CreateEventRequestDto;
+import com.bookonthego.DTO.UpdateEventRequestDto;
 import com.bookonthego.model.Booking;
 import com.bookonthego.model.Event;
 import com.bookonthego.repository.BookingRepository;
@@ -58,7 +59,7 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public Event updateEvent(Long eventId, CreateEventRequestDto updatedEvent, String token) {
+    public Event updateEvent(Long eventId, UpdateEventRequestDto updatedEvent, String token) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
         String userId = jwtUtil.extractUserId(token);
@@ -71,6 +72,8 @@ public class EventService {
             event.setDate(updatedEvent.getDate());
             event.setNoOfTickets(updatedEvent.getNoOfTickets());
             event.setTotalSeats(updatedEvent.getTotalSeats());
+            event.setPrice(updatedEvent.getPrice());
+            event.setImages(updatedEvent.getImages());
             return eventRepository.save(event);
         }
         return null;
