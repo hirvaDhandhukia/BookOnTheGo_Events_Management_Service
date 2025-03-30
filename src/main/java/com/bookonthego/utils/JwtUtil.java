@@ -1,5 +1,6 @@
 package com.bookonthego.utils;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.io.Decoders;
@@ -11,9 +12,8 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-
     // Private secret key used for signing JWT tokens
-    private final String secretKey = "wgyOEvtiUstJKYCQFRtj35fUweCPbQ89PsyjxVNtle4=";
+    private final String secretKey = Dotenv.load().get("SECRET_KEY");
 
     private SecretKey getSigningKey() {
         byte[] bytes = Decoders.BASE64.decode(secretKey);
