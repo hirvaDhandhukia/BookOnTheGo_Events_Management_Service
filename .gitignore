@@ -6,7 +6,9 @@
 .vscode/
 *.swp
 
+# Environment files
 .env
+*.env.local
 
 # System files
 .DS_Store
@@ -18,25 +20,17 @@ bin/
 build/
 out/
 
-# Log files
+# Logs
 *.log
 logs/
 
-# Maven specific files
+# Maven (keep wrapper files)
 pom.xml.versionsBackup
 dependency-reduced-pom.xml
 .mvn/
-mvnw
-mvnw.cmd
 
-# Dependency directories
+# Dependency directories (e.g., for frontend)
 **/node_modules/
-
-# Application properties (consider excluding or carefully managing these)
-# src/main/resources/application*.properties
-
-# Compiled class files
-*.class
 
 # Testing files
 **/test-output/
