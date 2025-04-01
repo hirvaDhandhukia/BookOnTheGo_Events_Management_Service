@@ -8,12 +8,15 @@ import com.bookonthego.model.Event;
 import com.bookonthego.repository.BookingRepository;
 import com.bookonthego.repository.EventRepository;
 import com.bookonthego.utils.JwtUtil;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class EventService {
 
     @Autowired
@@ -26,10 +29,13 @@ public class EventService {
     private JwtUtil jwtUtil;
 
     public Event createEvent(CreateEventRequestDto event, String token) {
-        String userId = jwtUtil.extractUserId(token);
+        Map<String, Object> claimMap = jwtUtil.extractAllClaims(token);
+        String userId = claimMap.get("id").toString();
 
         // check if there is an event with same name on the same date
+
         List<Event> events = eventRepository.findAll();
+
         for (Event e : events) {
             if (e.getName().equals(event.getName()) && e.getDate().equals(event.getDate())) {
                 throw new IllegalStateException("Event with same name and date already exists.");
@@ -42,7 +48,7 @@ public class EventService {
                 .creatorId(Long.valueOf(userId))
                 .name(event.getName())
                 .eventDetails(event.getEventDetails())
-                .date(new Date())
+                .date((System.currentTimeMillis()))
                 .price(event.getPrice())
                 .noOfTickets(event.getNoOfTickets())
                 .images(event.getImages())
@@ -62,14 +68,15 @@ public class EventService {
     public Event updateEvent(Long eventId, UpdateEventRequestDto updatedEvent, String token) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
-        String userId = jwtUtil.extractUserId(token);
+        Map<String, Object> claimMap = jwtUtil.extractAllClaims(token);
+        String userId = claimMap.get("id").toString();
 
 
         if (eventOptional.isPresent() && eventOptional.get().getCreatorId().equals(Long.valueOf(userId))) {
             Event event = eventOptional.get();
             event.setName(updatedEvent.getName());
             event.setEventDetails(updatedEvent.getEventDetails());
-            event.setDate(updatedEvent.getDate());
+            event.setDate(System.currentTimeMillis());
             event.setNoOfTickets(updatedEvent.getNoOfTickets());
             event.setTotalSeats(updatedEvent.getTotalSeats());
             event.setPrice(updatedEvent.getPrice());
@@ -81,7 +88,8 @@ public class EventService {
 
 
     public BookTicketResponseDto bookTicket(Long eventId, Integer numberOfTickets, String token) {
-        String userId = jwtUtil.extractUserId(token);
+        Map<String, Object> claimMap = jwtUtil.extractAllClaims(token);
+        String userId = claimMap.get("id").toString();
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isPresent()) {
             Event event = eventOptional.get();
@@ -127,10 +135,12 @@ public class EventService {
 
 
     public boolean deleteEvent(Long eventId, String token) {
-        String userId = jwtUtil.extractUserId(token);
+        Map<String, Object> claimMap = jwtUtil.extractAllClaims(token);
+        String userId = claimMap.get("id").toString();
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isPresent() && eventOptional.get().getCreatorId().equals(Long.valueOf(userId))) {
             eventRepository.deleteById(eventId);
+            bookingRepository.deleteBookingByEventId(eventId);
             return true;
         }
         return false;

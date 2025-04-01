@@ -3,7 +3,6 @@ package com.bookonthego.controller;
 import com.bookonthego.DTO.BookTicketResponseDto;
 import com.bookonthego.DTO.CreateEventRequestDto;
 import com.bookonthego.DTO.UpdateEventRequestDto;
-import com.bookonthego.model.Booking;
 import com.bookonthego.model.Event;
 import com.bookonthego.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ public class EventController {
 
     @PostMapping("/create")
     public ResponseEntity<Event> createEvent(@RequestBody CreateEventRequestDto event, @RequestHeader ("Authorization") String token) {
+        token = token.split(" ")[1];
         Event createdEvent = eventService.createEvent(event, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
     }
@@ -51,6 +51,7 @@ public class EventController {
             @PathVariable Long eventId,
             @RequestBody UpdateEventRequestDto updatedEvent,
             @RequestHeader("Authorization") String token) {
+        token = token.split(" ")[1];
 
         Event event = eventService.updateEvent(eventId, updatedEvent, token);
         return event != null ? ResponseEntity.ok(event) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -74,6 +75,7 @@ public class EventController {
     public ResponseEntity<?> bookTicket(@PathVariable Long eventId, @RequestParam Integer numberOfTickets,@RequestHeader("Authorization") String token) {
 
         try {
+            token = token.split(" ")[1];
             BookTicketResponseDto booking = eventService.bookTicket(eventId, numberOfTickets, token);
             return ResponseEntity.ok(booking);
         } catch (NoSuchElementException e) {
@@ -86,8 +88,9 @@ public class EventController {
 
     @DeleteMapping("/{eventId}")
     public ResponseEntity<String> deleteEvent(@PathVariable Long eventId, @RequestHeader("Authorization") String token) {
+        token = token.split(" ")[1];
         boolean deleted = eventService.deleteEvent(eventId, token);
-        return deleted ? ResponseEntity.ok("Event deleted.") : ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized.");
+        return deleted ? ResponseEntity.ok("Event deleted.") : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event Not Found.");
     }
 }
 

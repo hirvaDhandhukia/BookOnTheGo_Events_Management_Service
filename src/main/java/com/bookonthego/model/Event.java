@@ -20,7 +20,7 @@ public class Event {
     private Long creatorId;
     private String name;
     private String eventDetails;
-    private Date date;
+    private Long date;
     private double price;
     private int noOfTickets;
     private String images;
