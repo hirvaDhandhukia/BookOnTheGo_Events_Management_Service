@@ -14,7 +14,7 @@ import java.util.Date;
 public class UpdateEventRequestDto {
     private String name;
     private String eventDetails;
-    private Long date;
+    private Date date;
     private int noOfTickets;
     private int totalSeats;
     private Double price;

@@ -40,6 +40,13 @@ public class EventController {
         return event.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/myevents")
+    public ResponseEntity<List<Event>> getMyEvents(@RequestHeader("Authorization") String token) {
+        token = token.split(" ")[1];
+        Optional<List<Event>> events = eventService.getMyEvents(token);
+        return events.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 //    @PutMapping("/{eventId}")
 //    public ResponseEntity<Event> updateEvent(@PathVariable Long eventId, @RequestBody CreateEventRequestDto updatedEvent, @RequestHeader("Authorization") String token) {
 //        Event event = eventService.updateEvent(eventId, updatedEvent, token);

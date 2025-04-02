@@ -8,15 +8,12 @@ import com.bookonthego.model.Event;
 import com.bookonthego.repository.BookingRepository;
 import com.bookonthego.repository.EventRepository;
 import com.bookonthego.utils.JwtUtil;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-@AllArgsConstructor
 public class EventService {
 
     @Autowired
@@ -48,7 +45,7 @@ public class EventService {
                 .creatorId(Long.valueOf(userId))
                 .name(event.getName())
                 .eventDetails(event.getEventDetails())
-                .date((System.currentTimeMillis()))
+                .date(event.getDate())
                 .price(event.getPrice())
                 .noOfTickets(event.getNoOfTickets())
                 .images(event.getImages())
@@ -76,7 +73,7 @@ public class EventService {
             Event event = eventOptional.get();
             event.setName(updatedEvent.getName());
             event.setEventDetails(updatedEvent.getEventDetails());
-            event.setDate(System.currentTimeMillis());
+            event.setDate(updatedEvent.getDate());
             event.setNoOfTickets(updatedEvent.getNoOfTickets());
             event.setTotalSeats(updatedEvent.getTotalSeats());
             event.setPrice(updatedEvent.getPrice());
@@ -144,6 +141,12 @@ public class EventService {
             return true;
         }
         return false;
+    }
+
+    public Optional<List<Event>> getMyEvents(String token) {
+        Map<String, Object> claimMap = jwtUtil.extractAllClaims(token);
+        String userId = claimMap.get("id").toString();
+        return eventRepository.findByCreatorId(Long.valueOf(userId));
     }
 }
 
